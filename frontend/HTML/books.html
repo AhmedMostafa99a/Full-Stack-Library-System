@@ -1,0 +1,226 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Books</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'a1/books.css' %}">
+    <link rel="stylesheet" href="{% static 'a1/nav.css' %}">
+    <link rel="stylesheet" href="{% static 'a1/footer.css' %}">
+    <style>
+        .confirm-dialog {
+            display: none;
+            position: absolute;
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            padding: 15px;
+            width: 250px;
+            z-index: 100;
+            text-align: center;
+        }
+
+        .confirm-dialog p {
+            margin: 0 0 15px 0;
+            color: #333;
+        }
+
+        .confirm-dialog-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .confirm-btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .cancel-btn {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .book {
+            position: relative;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav">
+            <div class="logo">Library System</div>
+            <ul class="links">
+                <li><a href="{% url 'profile' %}">Profile</a></li>
+              <li><a href="{% url 'books' %}">Browse Books</a></li>
+              <li><a href="{% url 'borrowed' %}">My Books</a></li>
+              <li><a href="{% url 'search' %}">Search</a></li>
+              <li><a href="{% url 'bay' %}">Manage Books</a></li>
+              <button class ="btn"><a href="{% url 'login' %}">log out</a></button>
+            </ul>
+        </div>
+    </nav>
+    <div class="books-container">
+        {% for book_item in books %}
+        <div class="book" data-id="{{ book_item.id }}">
+            <div class="book-cover">
+                <img src="{{ book_item.pic }}" alt="{{ book_item.title }}" width="130">
+            </div>
+            <div class="book-info">
+                <h3 class="book-title">{{ book_item.title }}</h3>
+                <p class="author">{{ book_item.author }}</p>
+                <p><strong>Genre:</strong> {{ book_item.category }}</p>
+                <p><strong>Availability:</strong>
+                    {% if book_item.stock > 0 %}
+                    <span>Available</span>
+                    {% else %}
+                    <span class="unavailable">On Hold</span>
+                    {% endif %}
+                </p>
+                <p><strong>Stock:</strong> <span class="stock">{{ book_item.stock }}</span></p>
+                <a href="/book/{{ book_item.id }}/" class="details-btn">View Details</a>
+                <button class="details-btn borrow--btn {% if book_item.stock <= 0 %}unavailable-btn{% endif %}"
+                        data-book-id="{{ book_item.id }}"
+                        data-stock="{{ book_item.stock }}"
+                        {% if book_item.stock <= 0 %}disabled{% endif %}>
+                    Borrow book
+                </button>
+
+                <!-- Inline confirmation dialog for each book -->
+                <div class="confirm-dialog" id="confirm-dialog-{{ book_item.id }}">
+                    <p>Are you sure you want to borrow this book?</p>
+                    <div class="confirm-dialog-buttons">
+                        <button class="confirm-btn" data-book-id="{{ book_item.id }}">Confirm</button>
+                        <button class="cancel-btn" data-book-id="{{ book_item.id }}">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <footer>
+        <div class="footer">
+            <div class="footer-links">
+                <a href="#">&#8505; About Us</a> |
+                <a href="#">&#9993; Contact</a> |
+                <a href="#">&#9871; Privacy Policy</a> |
+                <a href="#">&#9873; Terms of Service</a>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 Library System. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const borrowButtons = document.querySelectorAll('.borrow--btn');
+
+            borrowButtons.forEach(button => {
+                button.addEventListener('click', (event) => {
+                    const bookId = button.getAttribute('data-book-id');
+                    const stock = parseInt(button.getAttribute('data-stock'));
+
+                    if (stock > 0) {
+                        // Show the inline confirmation dialog for this specific book
+                        const confirmDialog = document.getElementById(`confirm-dialog-${bookId}`);
+                        if (confirmDialog) {
+                            confirmDialog.style.display = 'block';
+                        }
+                    } else {
+                        alert("Sorry, this book is out of stock.");
+                    }
+                });
+            });
+
+            // Add event listeners for all confirm buttons
+            document.querySelectorAll('.confirm-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const bookId = this.getAttribute('data-book-id');
+                    const confirmDialog = document.getElementById(`confirm-dialog-${bookId}`);
+                    const borrowButton = document.querySelector(`.borrow--btn[data-book-id="${bookId}"]`);
+
+                    // Send AJAX request to borrow the book
+                    const formData = new FormData();
+                    formData.append('book_id', bookId);
+
+                    fetch('/borrow-book/', {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-CSRFToken': getCookie('csrftoken')
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Update the UI
+                            const bookInfo = borrowButton.closest('.book-info');
+                            const stockElement = bookInfo.querySelector('.stock');
+                            stockElement.textContent = data.stock;
+
+                            // Disable button if stock is 0
+                            if (data.stock <= 0) {
+                                borrowButton.classList.add('unavailable-btn');
+                                borrowButton.disabled = true;
+                                bookInfo.querySelector('p:nth-child(4) span').textContent = 'On Hold';
+                                bookInfo.querySelector('p:nth-child(4) span').classList.add('unavailable');
+                            }
+
+                            alert("Book borrowed successfully!");
+                        } else {
+                            alert("Error: " + data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert("An error occurred while borrowing the book.");
+                    });
+
+                    // Hide the confirmation dialog
+                    if (confirmDialog) {
+                        confirmDialog.style.display = 'none';
+                    }
+                });
+            });
+
+            // Add event listeners for all cancel buttons
+            document.querySelectorAll('.cancel-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const bookId = this.getAttribute('data-book-id');
+                    const confirmDialog = document.getElementById(`confirm-dialog-${bookId}`);
+
+                    // Hide the confirmation dialog
+                    if (confirmDialog) {
+                        confirmDialog.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+        // Function to get CSRF token from cookies
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    </script>
+</body>
+</html>

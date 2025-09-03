@@ -1,0 +1,132 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>add new book</title>
+		<meta charset="UTF-8">
+		<meta name = "author" content="OMAR">
+		<meta name = "keywords" content="html tutorial">
+		<link rel = "stylesheet" href="{% static 'a1/Style.css' %}">
+        <link rel="stylesheet" href="{% static 'a1/nav.css' %}">
+        <link rel="stylesheet" href="{% static 'a1/footer.css' %}" />
+    </head>
+
+
+	<body>
+    <nav>
+      <div class="nav">
+          <div class="logo">Library System</div>
+          <ul class="links">
+              <li><a href="profile.html">Profile</a></li>
+              <li><a href="books.html">Browse Books</a></li>
+              <li><a href="borrowed.html">My Books</a></li>
+              <li><a href="search_bar.html">Search</a></li>
+              <li><a href="admin_books.html">Manage Books</a></li>
+                <button class ="btn"><a href="login.html">log out</a></button>
+          </ul>
+      </div>
+  </nav>
+    <form method="post" action="omar/" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form" style="margin-top: 3%;">
+            <!--add new book header-->
+            <h2 > add new book  </h2>
+            <hr>
+            <!--input image section-->
+            <div id="drop-area">
+                <p id = "plus">+</p>
+                <p>drop book cover here</p>
+            </div>
+
+    <!-- Hidden button -->
+    <input id="real-file" name = "pic" required>
+
+      <br>
+            <div class ="row">
+            <!--book name input-->
+            <input type="text" placeholder="book name" name = "book name" required id = 'book name'>
+            <br>
+            <!--author name-->
+            <input type="text" placeholder="author name" name = "author name" required id = 'author name'>
+            </div>
+
+            <div class ="row" style="gap: 2%;">
+            <!--Book ID-->
+            <input style="width: 35%;" type="number" min="0" max="5000" placeholder="stock" step="1" id = 'stock' name = 'stock' required>
+            <!--category select -->
+            <select id="book-category"  placeholder="book-category" name="book-category" >
+                <option value="Romance">Romance</option>
+                <option value="Fantasy">Fantasy</option>
+                <option value="Science Fiction">Science Fiction</option>
+                <option value="Mystery">Mystery</option>
+                <option value="Horror">Horror</option>
+                <option value="Historical">Historical</option>
+                <option value="Adventure">Adventure</option>
+                <option value="Non-fiction">Non-fiction</option>
+              </select>
+            </div>
+
+            <!--Description-->
+            <textarea textarea id="message" name="about book" rows="5" cols="40" placeholder="enter decreption about the book" style="resize: none;" required></textarea>
+
+
+            <!--submit-->
+            <div class="row"style="gap: 1%;">
+    <!--shown button-->
+    <!-- <label for="real-file"style="width: 25%; padding:  .75% 1.5% .75% 1.5%" id="button">browse</label> -->
+            <input type="submit"style="width: 40%;" value="add new book">
+
+          </div>
+        </div>
+    </form>
+
+
+    <footer>
+      <div class="footer">
+        <div class="footer-links">
+            <a href="#">&#8505; About Us</a> |
+            <a href="#">&#9993; Contact</a> |
+            <a href="#">&#9871; Privacy Policy</a> |
+            <a href="#">&#9873; Terms of Service</a>
+        </div>
+        <div class="copyright">
+          <p>&copy; 2025 Local Library. All rights reserved .</p>
+        </div>
+      </div>
+    </footer>
+    <script>
+      let dropZone = document.getElementById('drop-area');
+      let submit = document.getElementById('add-new');
+      let pic = null;
+      dropZone.addEventListener('dragover',e=>{
+          e.preventDefault();
+          dropZone.style.backgroundColor = "grey"
+      })
+      dropZone.addEventListener('dragleave',e=>{
+          e.preventDefault();
+          dropZone.style.backgroundColor = ""
+      })
+      dropZone.addEventListener('drop',e=>{
+          e.preventDefault();
+          dropZone.style.backgroundColor = "";
+          const file = e.dataTransfer.files[0];
+          if(file && file.type.startsWith('image')){
+              dropZone.innerHTML = "";
+              const reader = new FileReader();
+              reader.onload = function(event) {
+                  const base64Image = event.target.result;
+                  pic = document.createElement('img');
+                  pic.src = base64Image;
+                  pic.width = 200;
+                  pic.height = 200;
+                  pic.id = 'pic';
+                  dropZone.appendChild(pic);
+                  {#console.log(pic)#}
+                  document.getElementById('real-file').value = pic.src
+              }
+              reader.readAsDataURL(file);
+          }
+      })
+    </script>
+  </body>
+</html>

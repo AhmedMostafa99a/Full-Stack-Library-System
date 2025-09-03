@@ -1,0 +1,159 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>searching for Books</title>
+		<meta charset="UTF-8">
+		<meta name = "author" content="OMAR">
+		<link rel = "stylesheet" href="{% static 'a1/search_bar.css' %}">
+		<link rel="stylesheet" href="{% static 'a1/nav.css' %}">
+        <link rel="stylesheet" href="{% static 'a1/footer.css' %}" />
+	</head>
+	<body>
+		<nav>
+			<div class="nav">
+				<div class="logo">Library System</div>
+				<ul class="links">
+					<li><a href="profile.html">Profile</a></li>
+					<li><a href="books.html">Browse Books</a></li>
+					<li><a href="borrowed.html">My Books</a></li>
+					<li><a href="{% url 'search' %}">Search</a></li>
+					<li><a href="{% url 'bay' %}">Manage Books</a></li>
+					<div>
+					  <button class ="btn"><a href="login.html">log out</a></button>
+                    </div>
+				</ul>
+			</div>
+		</nav>
+
+
+		<div id="ss">
+  <input type="text" name="query" class="search-input" placeholder="Search by name..." />
+  
+  <select class="search-filter" id="search-type">
+    <option value="name">Name</option>
+    <option value="category">Category</option>
+    <option value="author">Author</option>
+  </select>
+  
+  <button type="submit" id="nm" onclick="se(event)">🔍</button>
+</div>
+		<div class = "book-container">
+			{% for x in values %}
+                <div class = "book" style="margin-right: 110px">
+                    <img src="{{ x.pic }}" style="width: 250px; height: 250px">
+                    <p>{{ x.title }}</p>
+                </div>
+            {% endfor %}
+		</div>
+		<footer>
+			<div class="footer">
+			  <div class="footer-links">
+				  <a href="#">&#8505; About Us</a> |
+				  <a href="#">&#9993; Contact</a> |
+				  <a href="#">&#9871; Privacy Policy</a> |
+				  <a href="#">&#9873; Terms of Service</a>
+			  </div>
+			  <div class="copyright">
+				<p>&copy; 2025 Local Library. All rights reserved .</p>
+			  </div>
+			</div>
+		  </footer>
+	<script>
+		class book{
+				constructor(name , author , pic,cat){
+					this.name = name;
+					this.author = author;
+					this.pic = pic;
+					this.cat = cat
+				}
+			}
+			const blist =[]
+        let b;
+			{% for x in values %}
+                b = new book( "{{ x.title|escapejs }}", "{{ x.author|escapejs }}", "{{ x.pic|escapejs }}", "{{ x.category|escapejs }}");
+                blist.push(b);
+            {% endfor %}
+			function se(event){
+				event.preventDefault();
+				str = document.querySelector("input")
+				gf = document.querySelector("select")
+				document.getElementsByClassName("book-container")[0].innerHTML = "";
+				if(gf.value === "name"){
+					blist.forEach(function(bk){
+						if(bk.name.includes(str.value) && str.value!==""){
+						// const div = document.createElement('div')
+						// div.className  = "book"
+						const a = document.createElement('div')
+						{#a.href = bk.link#}
+						{#a.target = "_blank"#}
+						a.className = "book";
+                        a.style.marginRight = "110px";
+						const img = document.createElement('img')
+						img.src = bk.pic;
+                        img.style.height = "250px";
+                        img.style.width = "250px";
+						const p = document.createElement('p')
+						p.textContent = bk.name
+						a.appendChild(img)
+						a.appendChild(p)
+						// div.appendChild(a)
+						document.getElementsByClassName("book-container")[0].appendChild(a);
+						}
+					})
+				}
+				else if(gf.value === "author"){
+					blist.forEach(function(bk){
+						if(bk.author.includes(str.value) && str.value!==""){
+							// const div = document.createElement('div')
+							// div.className  = "book"
+							const a = document.createElement('a')
+							a.href = bk.link
+							a.target = "_blank"
+							a.className = "book";
+                            a.style.marginRight = "110px";
+							const img = document.createElement('img')
+							img.src = bk.pic;
+                            img.style.height = "250px";
+                            img.style.width = "250px";
+							const p = document.createElement('p')
+							p.textContent = bk.name
+							a.appendChild(img)
+							a.appendChild(p)
+							// div.appendChild(a)
+							document.getElementsByClassName("book-container")[0].appendChild(a);
+						}
+					})
+				}
+				else if(gf.value === "category"){
+					blist.forEach(function(bk){
+						if(str.value === bk.cat){
+						// const div = document.createElement('div')
+						// div.className  = "book"
+						const a = document.createElement('a')
+						a.href = bk.link
+						a.target = "_blank"
+						a.className = "book";
+                        a.style.marginRight = "110px";
+						const img = document.createElement('img')
+						img.src = bk.pic;
+                        img.style.height = "250px";
+                        img.style.width = "250px";
+						const p = document.createElement('p')
+						p.textContent = bk.name
+						a.appendChild(img)
+						a.appendChild(p)
+						// div.appendChild(a)
+						document.getElementsByClassName("book-container")[0].appendChild(a);
+						}
+					})
+				}
+			}
+			document.addEventListener("keydown",event=>{
+				if(event.key === "Enter"){
+					se(event);
+				}
+			})
+	</script>
+	</body>
+</html>

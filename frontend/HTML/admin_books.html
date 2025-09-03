@@ -1,0 +1,113 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Available Books</title>
+		<meta charset="UTF-8">
+		<meta name = "author" content="OMAR">
+		<meta name = "keywords" content="html tutorial">
+		<link rel = "stylesheet" href="{% static 'a1/admin_book.css' %}">
+        <link rel="stylesheet" href="{% static 'a1/nav.css' %}">
+        <link rel="stylesheet" href="{% static 'a1/footer.css' %}" />
+	</head>
+	<body>
+	    <nav>
+            <div class="nav">
+                <div class="logo">Library System</div>
+                <ul class="links">
+                    <li><a href="profile.html">Profile</a></li>
+                    <li><a href="books.html">Browse Books</a></li>
+                    <li><a href="borrowed.html">My Books</a></li>
+                    <li><a href="search_bar.html">Search</a></li>
+                    <li><a href="admin_books.html">Manage Books</a></li>
+                    <div>
+                      <button class ="btn"><a href="login.html">log out</a></button>
+                    </div>
+                </ul>
+            </div>
+        </nav>
+        <form method="post" action="del/">
+            {% csrf_token %}
+            <ul class = "book-container">
+            {% for x in values %}
+            <li class = "lbook">
+                <input type="checkbox" id = "check" style="visibility: hidden;" name="id" value="{{ x.id }}">
+				<a href = "{% url 'up' x.id %}" class = "book" id = "1">
+                    <div id = "cover">
+                        <img src = "{{ x.pic }}" id = 'pic'>
+                    </div>
+                    <div id = "details">
+                        <h2 id = 'title'>{{ x.title }}</h2>
+                        <br>
+                        <p>author name: </p>
+                        <p style="color: red;" id = "author">{{ x.author }}</p>
+                        <br>
+                        <p>category: </p>
+                        <p id = "cat">{{ x.category }}</p>
+                        <br>
+                        <p ><strong>description: </strong></p>
+                        <pre id = 'desc'>{{ x.description }}</pre>
+                        <p id = 'stock' >stock : {{ x.stock }}</p>
+                    </div>
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+        <div id = "btt">
+            <a href="{% url 'add' %}" id="Abook">add new book</a>
+            <button id = "remove" type="button" onclick='omar()'>remove</button>
+            <button id = cancel type="button" onclick= 'bay()' >cancel</button>
+            <input id = confirm type="submit" value="confirm">
+        </div>
+        </form>
+        <footer>
+            <div class="footer">
+              <div class="footer-links">
+                  <a href="#">&#8505; About Us</a> |
+                  <a href="#">&#9993; Contact</a> |
+                  <a href="#">&#9871; Privacy Policy</a> |
+                  <a href="#">&#9873; Terms of Service</a>
+              </div>
+              <div class="copyright">
+                <p>&copy; 2025 Local Library. All rights reserved .</p>
+              </div>
+            </div>
+          </footer>
+          <script>
+			function omar(){
+                const list = document.querySelectorAll(".lbook")
+				const btt = document.querySelectorAll("#check")
+				for(let i = 0 ; i < btt.length;i++){
+					btt[i].style.visibility = "visible";
+				}
+                for(let i = 0 ; i < list.length;i++){
+					const a = list[i].querySelector("a")
+                    // a.dataset.originalHref = a.href;
+                    a.href = "#";
+                    a.onclick = function(event){
+                        event.preventDefault();
+                        const checkbox = list[i].querySelector("#check");
+                        checkbox.checked = !checkbox.checked;
+                    };
+				}
+				document.getElementById("cancel").style.visibility = "visible";
+				document.getElementById("confirm").style.visibility = "visible";
+			}
+			function bay(){
+                const list = document.querySelectorAll(".lbook")
+				const btt = document.querySelectorAll("#check")
+				for(let i = 0 ; i < btt.length;i++){
+					btt[i].style.visibility = "hidden";
+				}
+                for(let i = 0 ; i < list.length;i++){
+					const a = list[i].querySelector("a")
+                    a.href = "edit_book.html"
+                    a.onclick = null;
+				}
+				document.getElementById("cancel").style.visibility = "hidden";
+				document.getElementById("confirm").style.visibility = "hidden";
+			}
+
+		  </script>
+	</body>
+</html>

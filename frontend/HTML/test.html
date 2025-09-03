@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Read and Display Text File</title>
+</head>
+<body>
+  <!-- <input type="file" id="file-selector">
+  <div id = "out">
+
+  </div>
+<script>
+  document.getElementById("file-selector").addEventListener('change',(event)=>{
+    const file = event.target.files[0];
+    console.log(file)
+    const reader = new FileReader();
+    reader.onload = function(e){
+      const con = e.target.result
+      document.getElementById("out").textContent = con
+    }
+    reader.readAsText(file);
+  })
+</script> -->
+
+<h2>Select a .txt file:</h2>
+<!-- <button onclick="showdetails()">persons</button> -->
+<div id = "p">
+
+</div>
+<script>
+  let people = JSON.parse(localStorage.getItem('people')) || [];
+  let p = document.getElementById('p');
+  people.forEach(person => {
+    let h2 = document.createElement('h2');
+    h2.textContent = person.name;
+    let h3 = document.createElement('h3');
+    h3.textContent = person.age;
+    p.appendChild(h2);
+    p.appendChild(document.createElement('br'));
+    p.appendChild(h3);
+    p.appendChild(document.createElement('br'));
+  });
+</script>
+</body>
+</html>

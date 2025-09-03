@@ -1,0 +1,194 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Book Details</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'a1/book_details.css' %}">
+    <link rel="stylesheet" href="{% static 'a1/nav.css' %}">
+    <link rel="stylesheet" href="{% static 'a1/footer.css' %}">
+</head>
+<body>
+    <nav>
+        <div class="nav">
+            <div class="logo">Library System</div>
+            <ul class="links">
+                <li><a href="profile.html">Profile</a></li>
+                <li><a href="books.html">Browse Books</a></li>
+                <li><a href="borrowed.html">My Books</a></li>
+                <li><a href="search_bar.html">Search</a></li>
+                <li><a href="admin_books.html">Manage Books</a></li>
+                <div>
+                    <button class="btn"><a href="login.html">log out</a></button>
+                </div>
+            </ul>
+        </div>
+    </nav>
+    <div class="book-details-container">
+        <div class="book-cover">
+            <img id="detail-cover-img" src="{{ book.pic }}" alt="{{ book.title }}">
+        </div>
+        <div class="book-info">
+            <h1 id="detail-title">{{ book.title }}</h1>
+            <h3 id="detail-author">by {{ book.author }}</h3>
+            <div class="book-metadata">
+                <div class="metadata-item">
+                    <span class="label">Genre:</span>
+                    <span id="detail-genre">{{ book.category }}</span>
+                </div>
+                <div class="metadata-item">
+                    <span class="label">Availability:</span>
+                    <span id="detail-availability">
+                        {% if book.stock > 0 %}
+                            Available
+                        {% else %}
+                            On Hold
+                        {% endif %}
+                    </span>
+                </div>
+                <div class="metadata-item">
+                    <span class="label">Stock:</span>
+                    <span id="detail-stock">{{ book.stock }}</span>
+                </div>
+                <div class="metadata-item">
+                    <span class="label">Description:</span>
+                    <p id="detail-synopsis">{{ book.description }}</p>
+                </div>
+            </div>
+            <div class="action-buttons">
+                <button id="borrowBtn" class="borrow-btn {% if book.stock <= 0 %}unavailable-btn{% endif %}" 
+                        data-book-id="{{ book.id }}" 
+                        data-stock="{{ book.stock }}"
+                        {% if book.stock <= 0 %}disabled{% endif %}>
+                    Borrow Book
+                </button>
+                <a href="books.html" class="back-btn">Back to Books</a>
+            </div>
+        </div>
+    </div>
+    <div id="confirmationModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Confirm Borrow</h2>
+                <p>Are you sure you want to borrow this book?</p>
+            </div>
+            <div class="modal-footer">
+                <button id="confirmBtn" class="confirm-btn">Confirm</button>
+                <button id="cancelBtn" class="cancel-btn">Cancel</button>
+            </div>
+        </div>
+    </div>
+    <footer>
+        <div class="footer">
+            <div class="footer-links">
+                <a href="#">&#8505; About Us</a> |
+                <a href="#">&#9993; Contact</a> |
+                <a href="#">&#9871; Privacy Policy</a> |
+                <a href="#">&#9873; Terms of Service</a>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 Library System. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const borrowBtn = document.getElementById('borrowBtn');
+            const modal = document.getElementById('confirmationModal');
+            const confirmBtn = document.getElementById('confirmBtn');
+            const cancelBtn = document.getElementById('cancelBtn');
+            
+            if (borrowBtn) {
+                borrowBtn.addEventListener('click', () => {
+                    const stock = parseInt(borrowBtn.dataset.stock);
+                    if (stock > 0) {
+                        modal.style.display = "block";
+                        document.body.style.overflow = "hidden";
+                    } else {
+                        alert("Sorry, this book is out of stock.");
+                    }
+                });
+            }
+
+            confirmBtn.addEventListener('click', () => {
+                // Send AJAX request to borrow the book
+                const bookId = borrowBtn.dataset.bookId;
+                const formData = new FormData();
+                formData.append('book_id', bookId);
+                
+                fetch('/borrow-book/', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken')
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Update the UI
+                        const stockElement = document.getElementById('detail-stock');
+                        const availabilityElement = document.getElementById('detail-availability');
+                        stockElement.textContent = data.stock;
+                        
+                        // Disable button if stock is 0
+                        if (data.stock <= 0) {
+                            borrowBtn.classList.add('unavailable-btn');
+                            borrowBtn.disabled = true;
+                            availabilityElement.textContent = 'On Hold';
+                        }
+                        
+                        alert("Book borrowed successfully!");
+                    } else {
+                        alert("Error: " + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert("An error occurred while borrowing the book.");
+                });
+                
+                modal.style.display = "none";
+                document.body.style.overflow = "auto";
+            });
+
+            cancelBtn.addEventListener('click', () => {
+                modal.style.display = "none";
+                document.body.style.overflow = "auto";
+            });
+
+            window.addEventListener('click', (event) => {
+                if (event.target === modal) {
+                    modal.style.display = "none";
+                    document.body.style.overflow = "auto";
+                }
+            });
+        });
+
+        // Function to get CSRF token from cookies
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        
+        let persons = JSON.parse(localStorage.getItem('userEmail')) ;
+        if(persons.isAdmin=="User"){
+          const link = document.querySelector('a[href="admin_books.html"]');
+          if(link){
+            link.remove();
+          }
+        }
+    </script>
+</body>
+</html>

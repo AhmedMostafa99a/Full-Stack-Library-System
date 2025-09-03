@@ -1,0 +1,58 @@
+.nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background-color: #3498db;
+    color: white;
+}
+
+.nav .logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+  .logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+  
+  .links {
+    display: flex;
+    list-style: none;
+  }
+  
+  .links li {
+    margin-left: 1.5rem;
+    margin-top: 6px;
+  }
+  
+  .links a {
+
+    color: white;
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  
+  .links a:hover,
+  .logo:hover {
+    color: #55ff00;
+  }
+.btn {
+    background-color: #1877f2; /* Facebook's primary blue */
+    color: white;
+    margin-left: 10px;
+    border: none;
+    padding: 0.5rem 1rem; /* Slightly more vertical padding for better proportions */
+    border-radius: 6px; /* Facebook uses slightly more rounded corners */
+    cursor: pointer;
+    font-weight: bold; /* Facebook buttons typically use bold text */
+    font-size: 1rem;
+  
+}
+
+.btn:hover {
+    background-color: #166fe5; /* Slightly darker blue on hover */
+    color: white; /* Keeping text white on hover for better contrast */
+    transform: scale(1.02); /* Slight scale effect */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Enhanced shadow on hover */
+}

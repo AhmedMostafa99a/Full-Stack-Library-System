@@ -1,0 +1,167 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Borrowed Books</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'a1/bowrrow.css' %}">
+    <link rel="stylesheet" href="{% static 'a1/nav.css' %}">
+    <link rel="stylesheet" href="{% static 'a1/footer.css' %}">
+</head>
+<body>
+    <nav>
+        <div class="nav">
+            <div class="logo">Library System</div>
+            <ul class="links">
+                <li><a href="{% url 'profile' %}">Profile</a></li>
+              <li><a href="{% url 'books' %}">Browse Books</a></li>
+              <li><a href="{% url 'borrowed' %}">My Books</a></li>
+              <li><a href="{% url 'search' %}">Search</a></li>
+              <li><a href="{% url 'bay' %}">Manage Books</a></li>
+              <button class ="btn"><a href="{% url 'login' %}">log out</a></button>
+            </ul>
+        </div>
+    </nav>
+    <div class="container">
+        <h1>My Borrowed Books</h1>
+        <div class="books-container">
+            {% if borrowed_books %}
+                {% for borrowed in borrowed_books %}
+                <div class="book-wrapper" data-borrowed-id="{{ borrowed.id }}">
+                    <div class="book-cover">
+                        <img src="{{ borrowed.book.pic }}" alt="{{ borrowed.book.title }}" width="130" />
+                    </div>
+                    <div class="book-info">
+                        <h3 class="book-title">{{ borrowed.book.title }}</h3>
+                        <p class="author">{{ borrowed.book.author }}</p>
+                        <div class="date">
+                            <p>Borrowed: {{ borrowed.borrow_date|date:"Y-m-d" }}</p>
+                            <span class="date {% if borrowed.due_date < today %}overdue{% endif %}">
+                                {% if borrowed.due_date < today %}
+                                    Overdue: {{ borrowed.due_date|date:"Y-m-d" }}
+                                {% else %}
+                                    Due: {{ borrowed.due_date|date:"Y-m-d" }}
+                                {% endif %}
+                            </span>
+                        </div>
+                        <button class="return-btn" data-borrowed-id="{{ borrowed.id }}">Return Book</button>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="no-books">
+                    <p>You haven't borrowed any books yet.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    <div id="confirmModal" class="modal hidden">
+        <div class="modal-content">
+            <p>Are you sure you want to return this book?</p>
+            <div class="modal-buttons">
+                <button id="confirmYes">Yes</button>
+                <button id="confirmNo">Cancel</button>
+            </div>
+        </div>
+    </div>
+    <footer>
+        <div class="footer">
+            <div class="footer-links">
+                <a href="#">&#8505; About Us</a> |
+                <a href="#">&#9993; Contact</a> |
+                <a href="#">&#9871; Privacy Policy</a> |
+                <a href="#">&#9873; Terms of Service</a>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 Local Library. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const returnButtons = document.querySelectorAll(".return-btn");
+            const modal = document.getElementById("confirmModal");
+            const confirmYes = document.getElementById("confirmYes");
+            const confirmNo = document.getElementById("confirmNo");
+            let bookToRemove = null;
+            let borrowedId = null;
+
+            returnButtons.forEach((button) => {
+                button.addEventListener("click", function() {
+                    bookToRemove = this.closest(".book-wrapper");
+                    borrowedId = this.dataset.borrowedId;
+                    modal.classList.remove("hidden");
+                    document.body.style.overflow = "hidden";
+                });
+            });
+
+            confirmYes.addEventListener("click", function() {
+                if (bookToRemove && borrowedId) {
+                    // Send AJAX request to return the book
+                    const formData = new FormData();
+                    formData.append('borrowed_id', borrowedId);
+
+                    fetch('/return-book/', {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-CSRFToken': getCookie('csrftoken')
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Remove the book from the UI
+                            bookToRemove.remove();
+
+                            // Check if there are no more books
+                            const booksContainer = document.querySelector('.books-container');
+                            if (document.querySelectorAll('.book-wrapper').length === 0) {
+                                const noBooks = document.createElement('div');
+                                noBooks.className = 'no-books';
+                                noBooks.innerHTML = '<p>You haven\'t borrowed any books yet.</p>';
+                                booksContainer.appendChild(noBooks);
+                            }
+
+                            alert("Book returned successfully!");
+                        } else {
+                            alert("Error: " + data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert("An error occurred while returning the book.");
+                    });
+
+                    modal.classList.add("hidden");
+                    document.body.style.overflow = "unset";
+                }
+            });
+
+            confirmNo.addEventListener("click", function() {
+                bookToRemove = null;
+                borrowedId = null;
+                modal.classList.add("hidden");
+                document.body.style.overflow = "unset";
+            });
+        });
+
+        // Function to get CSRF token from cookies
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    </script>
+</body>
+</html>

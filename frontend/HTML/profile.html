@@ -1,0 +1,146 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Library Member Profile</title>
+    <link rel = "stylesheet" href="{% static 'a1/profile.css' %}">
+    <link rel="stylesheet" href="{% static 'a1/nav.css' %}">
+    <link rel="stylesheet" href="{% static 'a1/footer.css' %}" />
+  </head>
+  <body>
+
+    <!-- ------------------------ -->
+    <script>
+      function edit_info() {
+        var name = document.getElementById("name");
+        var phone = document.getElementById("phone");
+        var address = document.getElementById("address");
+        var button = document.getElementById("editBtn");
+    
+        if (name.disabled) {
+          name.disabled = false;
+          phone.disabled = false;
+          address.disabled = false;
+          button.innerText = "Save";
+        } else {
+          name.disabled = true;
+          phone.disabled = true;
+          address.disabled = true;
+          button.innerText = "Edit";
+        }
+      }
+    </script>
+    <!-- ------------------------ -->
+    <nav>
+      <div class="nav">
+          <div class="logo">Library System</div>
+          <ul class="links">
+              <li><a href="{% url 'profile' %}">Profile</a></li>
+              <li><a href="{% url 'books' %}">Browse Books</a></li>
+              <li><a href="{% url 'borrowed' %}">My Books</a></li>
+              <li><a href="{% url 'search' %}">Search</a></li>
+              <li><a href="{% url 'bay' %}">Manage Books</a></li>
+              <button class ="btn"><a href="{% url 'login' %}">log out</a></button>
+          </ul>
+      </div>
+  </nav>
+
+    <div>
+      <div class="profile">
+        <img
+          src="https://preview.redd.it/if-you-were-in-charge-of-the-plot-of-the-new-ben-10-series-v0-x40x5bul3drc1.jpeg?width=640&crop=smart&auto=webp&s=e60ee7617beab57a036d8c9dd4a2d89d670dad07"
+          alt="Library Member"
+          width="160"
+        />
+      <h4><span>Name :</span> <input type="text" id="name" value="{{ user.name }}" disabled></h4>
+      <p>Library Member</p>
+      <b>Active Member ✅</b>
+
+      </div>
+      <h3>Member Information</h3>
+  <div class="member-info">
+    <div>
+      <h4>&#128100; Gender</h4>
+      <p>Male</p>
+    </div>
+    <div>
+      <h4>&#128100; Member ID</h4>
+      <p>20240822</p>
+    </div>
+    <div>
+      <h4>&#9993; Email</h4>
+      <p id ="email">{{user.email}}</p> <!-- Not editable -->
+    </div>
+    <div>
+      <h4>&#128222; Phone</h4>
+      <input type="text" id="phone" value="01029943015" disabled>
+    </div>
+    <div>
+      <h4>&#127968; Address</h4>
+      <input type="text" id="address" value="giza , hawamdeya" disabled>
+    </div>
+  </div>
+  
+  
+  <div class="books-info">
+    <h3>Books Information</h3>
+    <div>
+            <div>
+              <h4>&#128176; Total Payment</h4>
+              <p>$645.00</p>
+            </div>
+            <div>
+              <h4>&#10084; Favorite Book</h4>
+              <p>Web Technology 🤩</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--------------------------------------->
+    <button id="editBtn" class = "btn" onclick="edit_info()">Edit Information</button>
+    <!--------------------------------------->
+
+<footer>
+  <div class="footer">
+    <div class="footer-links">
+        <a href="#">&#8505; About Us</a> |
+        <a href="#">&#9993; Contact</a> |
+        <a href="#">&#9871; Privacy Policy</a> |
+        <a href="#">&#9873; Terms of Service</a>
+    </div>
+    <div class="copyright">
+      <p>&copy; 2025 Local Library. All rights reserved .</p>
+    </div>
+  </div>
+</footer>
+<!----------------------------->
+<script>
+
+  var persons = JSON.parse(localStorage.getItem('userEmail')) ;
+
+  let label=document.getElementById('name');
+if(label.innerText.trim()==""){
+  label.value=persons.name;
+}
+
+if(persons.isAdmin=="User"){
+  const link = document.querySelector('a[href="admin_books.html"]');
+
+  if(link){
+    link.remove();
+  }
+}
+  var userEmail = persons.email;
+  if (userEmail) {
+    document.getElementById("email").innerText = userEmail;
+  } else {
+    document.getElementById("email").innerText = "Eamil not found";
+  }
+</script>
+<!----------------------------->
+      </div>
+    </div>
+  </body>
+</html>

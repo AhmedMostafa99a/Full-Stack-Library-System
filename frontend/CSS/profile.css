@@ -1,0 +1,64 @@
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    color: #333;
+}
+
+/* Main content styles */
+.profile {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.profile img {
+    border: 4px solid #3498db;
+    border-radius: 50%;
+}
+
+.profile img:hover {
+    border-color: #55ff00;
+    transition: .6s;
+    transform: scale(1.15);
+}
+
+.member-info {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1px;
+}
+
+h3 {
+    color: #2c3e50;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 0.5rem;
+}
+
+/* Member information styles */
+div>div {
+    margin-bottom: 1.5rem;
+}
+
+div>div>div {
+    margin-bottom: 1rem;
+}
+
+h4 {
+    margin-bottom: 0.3rem;
+    color: #3498db;
+}
+
+/* Books info styles */
+.books-info {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+

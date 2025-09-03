@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html>
+	
+	<head>
+		<title>let's learn</title>
+	</head>
+	<body>
+		<p id = "num">3</p>
+	<br>
+	<button onclick="add()">add</button>
+	<br>
+	<button onclick="sub()">minus</button>
+	<input type="text" id = 'name'>
+	<br>
+	<input type="number" id = 'age'>
+	<button onclick="addperson(document.getElementById('name').value , document.getElementById('age').value)">add new person</button>
+	<button onclick="removeperson(document.getElementById('name').value)">remove person</button>
+		<div
+			id="drop_zone" style="border: 2px solid black; width: 250px; height: 200px; text-align: center;">
+			<p>Drag one or more files to this <i>drop zone</i>.</p>
+		</div>
+		<select id="genreChoice" name="genreChoice" required>
+			<option value="option1">Romance</option>
+			<option value="option2">Fantasy</option>
+			<option value="option2">Science Fiction</option>
+			<option value="option2">Mystery</option>
+			<option value="option2">Horror</option>
+			<option value="option2">Historical</option>
+			<option value="option2">Adventure</option>
+			<option value="option2">Non-fiction</option>
+		</select>
+		<br>
+		<button onclick="alert(document.getElementById('genreChoice').selectedOptions[0].text)"></button>
+		<div id = "omar" >
+			<label>here you can pick a text file</label>
+			<!-- <input type="file" id = 'in'> -->
+			<input id = "bttn" type = 'button' onclick="wwe()" value="pick a file">
+			<br>
+			 <img src = "اللهب الازرق.jpg" id = 'aew'>
+			<br>
+			<label>here you can pick a video</label>
+			<input type="file" id = 'vid' multiple accept="video/*">
+			<br>
+			<label style="display: none;">here you can pick a pic</label>
+			<input type="file" id = 'pic' multiple accept="image/*" style="display: none;">
+			<br>
+			<input type="text" placeholder="your id ...." name="id" id = "id">
+			<br>
+			<input type="text" value="" name="name" id = "title">
+			<br>
+			<input type = "text" value="" name = "age" id = "author">
+			<br>
+			<textarea value="" name = "GPA" id = "GPA" style="width: 500px; height: 300px;"></textarea>
+			<br>
+			<button onclick="fun()" style="margin-right: 50px;">omar fun</button>
+			<button id = "ssssss" onclick="print()">print</button>
+			<br>
+			<h1>this is to read only</h1>
+			<pre id = "read" style="font-size: 20px;"></pre>
+			<br>
+			<h1>this is to read and write</h1>
+			<textarea id  = "area" style="width: 500px; height: 300px;"></textarea>
+			<br>
+			<button id = "ssssss" onclick="save()">save</button>
+			<div id = "dis">
+
+			</div>
+		</div>
+		<script>
+				let dropZone = document.getElementById('drop_zone');
+				dropZone.addEventListener('dragover',e=>{
+					e.preventDefault();
+					dropZone.style.backgroundColor = "grey"
+				})
+				dropZone.addEventListener('dragleave',e=>{
+					e.preventDefault();
+					dropZone.style.backgroundColor = ""
+				})
+				dropZone.addEventListener('drop',e=>{
+					e.preventDefault();
+					dropZone.style.backgroundColor = "";
+					const file = e.dataTransfer.files[0];
+					if(file && file.type.startsWith('image')){
+						dropZone.innerHTML = "";
+						const pic = document.createElement('img');
+						pic.src = URL.createObjectURL(file);
+						pic.width = 200;
+						pic.height = 200;
+						dropZone.appendChild(pic)
+					}
+				})
+				let fileHandle;
+				let lines;
+				let words;
+				let stream;
+				async function wwe(){
+					fileHandle = await window.showOpenFilePicker();
+					fileHandle = fileHandle[0];
+					let data = await fileHandle.getFile();
+					let texter = await data.text();
+					lines = texter.split(/\s+/);
+					document.getElementById('read').textContent = texter;
+					document.getElementById('area').value = texter;
+				}
+				document.getElementById('aew').addEventListener('click',()=>{
+					document.getElementById('pic').click();
+				})
+				const vid = document.getElementById('vid')
+				vid.addEventListener('change',(event)=>{
+					for(let i = 0 ; i < event.target.files.length ; i++){
+						let v = document.createElement('video')
+						v.src = URL.createObjectURL(event.target.files[i]);
+						v.controls = true;
+						v.style = "height: 500px;width:500px;"
+						document.getElementById('dis').appendChild(v);
+					}
+				});
+				const pic = document.getElementById('pic')
+				pic.addEventListener('change',(event)=>{
+					// for(let i = 0 ; i < event.target.files.length ; i++){
+					// 	let pi = document.createElement('img')
+						// pi.src = URL.createObjectURL(event.target.files[i]);
+					// 	document.getElementById('dis').appendChild(pi);
+					// }
+					document.getElementById('aew').src = URL.createObjectURL(event.target.files[0]);
+				});
+			function fun(){
+				acc = 0;
+				const text = document.getElementById('id');
+				if(!fileHandle || text.value === ""){
+					alert("pick a file first");
+					document.getElementById('name').value = "";
+					document.getElementById('age').value = "";
+					document.getElementById('GPA').value = "";
+				}
+				else{
+					acc = 0;
+					document.getElementById('name').value = "";
+					document.getElementById('age').value = "";
+					document.getElementById('GPA').value = "";
+					for(let i = 0 ; i < lines.length ; i++){
+						if(acc === 1){
+							if(lines[i] === 'name:'){
+								i+=1;
+								document.getElementById('title').value = "";
+								while(lines[i]!== 'author:'){
+									document.getElementById('title').value+=lines[i]+' ';
+									i+=1;
+								}
+							}
+							if(lines[i] === 'author:'){
+								i+=1;
+								document.getElementById('author').value = "";
+								while(lines[i]!== 'description:'){
+									document.getElementById('author').value+=lines[i]+' ';
+									i+=1;
+								}
+							}
+							if(lines[i] === 'description:'){
+								i+=1;
+								document.getElementById('GPA').value = "";
+								while(lines[i]!== 'id:' && i < lines.length){
+									document.getElementById('GPA').value+=lines[i]+' ';
+									i+=1;
+								}
+							}
+							acc = 0;
+						}
+						else if(lines[i] === 'id:' && lines[i+1] === document.getElementById('id').value){
+							acc = 1 ;
+							i+=1;
+						}
+						else{
+							acc = 0;
+						}
+					}
+				}
+			}
+			function print() {
+				let index;
+				let old = document.getElementById('area').value;
+				let words = old.split(/\s+/)
+				let id = document.getElementById('id').value;
+				let name = document.getElementById('title').value
+				let author = document.getElementById('author').value
+				let desc = document.getElementById('GPA').value
+				if(id === "" ){
+					alert("enter the id")
+				}
+				else if(name === "" ){
+					alert("enter the title")
+				}
+				else if(author === "" ){
+					alert("enter the author")
+				}
+				else if(desc === "" ){
+					alert("enter the desc")
+				}
+				else{
+					words.forEach(element => {
+						console.log(element);
+				});
+					console.log("\n\n\n\n\n")
+					for(let i = 0 ; i < words.length ;i++){
+						let c = 0;
+						if(words[i] === 'id:' && words[i+1]===id){
+							i+=3;
+							let newname = name.split(/\s+/);
+							for(let j = i ; words[j]!== 'author:' ;j++){
+								c+=1;
+							}
+							words.splice(i , c , ...newname);
+							i+=newname.length + 1;
+							c = 0;
+							let newauthor = author.split(/\s+/);
+							for(let j = i ; words[j]!== 'description:' ;j++){
+								c+=1;
+							}
+							words.splice(i , c , ...newauthor);
+							i+=newauthor.length + 1 ;
+							c=0;
+							for(let j = i ; words[j]!== 'id:' && j < words.length ;j++){
+								c+=1;
+							}
+							let newdesc = desc.split(/\s+/);
+							words.splice(i , c , ...newdesc);
+							i+= newdesc.length + 1;
+							break;
+						}
+					}
+				}
+				document.getElementById('area').innerHTML = "";
+				document.getElementById('area').value = "";
+				let c = 0;
+				words.forEach(element => {
+					if(element === "description:" || element === "author:" || element === 'name:'){
+						document.getElementById('area').value+= ('\n' + "	" + element + " ");
+					}
+					else if(element === 'id:' ){
+						if(c === 0){
+							document.getElementById('area').value+= (element + " ");
+						}
+						else{
+							document.getElementById('area').value+= ('\n'+ element + " ");
+						}
+						c+=1;
+					}
+					else{
+						document.getElementById('area').value+=element + " ";
+					}
+					console.log(element);
+				});
+			}
+			async function save(){
+				let stream = await fileHandle.createWritable();
+				await stream.write(document.getElementById('area').value);
+				await stream.close();
+			}
+			var people = JSON.parse(localStorage.getItem('people')) || [];
+
+			class Person {
+				constructor(name, age) {
+					this.name = name;
+					this.age = age;
+				}
+			}
+			function addperson(name, age) {
+				let per = new Person(name, age);
+				people.push(per);
+				document.getElementById('name').value = '';
+				document.getElementById('age').value = '';
+				localStorage.setItem('people', JSON.stringify(people));
+			}
+			function removeperson(name) {
+				document.getElementById('name').value = '';
+				for(let i = 0 ; i < people.length ; i++){
+					if(people[i].name === name){
+						people.splice(i,1);
+					}
+				}
+				localStorage.setItem('people', JSON.stringify(people));
+			}
+			function add(){
+				let n = parseInt(document.getElementById('num').textContent);
+				n+=1;
+				document.getElementById('num').textContent = n;
+				localStorage.setItem('num',n);
+			}
+			function sub(){
+				let n = parseInt(document.getElementById('num').textContent);
+				n-=1;
+				document.getElementById('num').textContent = n;
+				localStorage.setItem('num',n);
+			}
+			document.getElementById('num').textContent = localStorage.getItem('num');
+		</script>
+	</body>
+</html>
