@@ -1,61 +1,40 @@
-📚 Online Library Management System
-A full-featured online library website built with Django and Python. Users can browse and borrow books, while admins have full control over the library's inventory.
+# 📚 Online Library Management System
 
-✨ Features
-👤 User Features
-🔐 Sign Up / Login with role selection (User or Admin)
+A full-featured online library website built with **Django** and **Python**. Users can browse and borrow books, while admins have full control over the library's inventory.
 
-🔍 Search for books by title, author, or category
+---
 
-📖 View all available books with clear availability status
+## ✨ Features
 
-📚 Borrow available books with a single click
+### 👤 User Features
+- **🔐 Sign Up / Login** with role selection (User or Admin)
+- **🔍 Search** for books by title, author, or category
+- **📖 View** all available books with clear availability status
+- **📚 Borrow** available books with a single click
+- **👀 View** a personal list of borrowed books
 
-👀 View a personal list of borrowed books
+### ⚙️ Admin Features
+- **🎯 Add, Edit, and Delete** books from the library
+- **👁️ View** the complete list of available books
+- **📊 Manage** the entire book inventory effortlessly
 
-⚙️ Admin Features
-🎯 Add, Edit, and Delete books from the library
+### 🌐 For Everyone
+- **🚀 Dynamic Navigation Bar** that changes based on your role
+- **📱 Responsive Design** accessible on all pages
 
-👁️ View the complete list of available books
+---
 
-📊 Manage the entire book inventory effortlessly
+## 🛠️ Tech Stack
 
-🌐 For Everyone
-🚀 Dynamic Navigation Bar that changes based on your role
+- **Backend:** Django, Python
+- **Database:** SQLite (default, can be configured for PostgreSQL)
+- **Frontend:** HTML, CSS, JavaScript
 
-📱 Responsive Design accessible on all pages
+---
 
-🛠️ Tech Stack
-Backend: Django, Python
+## 🚀 Quick Start
 
-Database: SQLite (default, can be configured for PostgreSQL)
-
-Frontend: HTML, CSS, JavaScript
-
-🚀 Quick Start
-Clone the repo
-
-bash
-git clone https://github.com/yourusername/online-library.git
-cd online-library
-Create a virtual environment & install dependencies
-
-bash
-python -m venv venv
-source venv/bin/activate  # On Windows: `venv\Scripts\activate`
-pip install -r requirements.txt
-Run migrations & start the server
-
-bash
-python manage.py migrate
-python manage.py runserver
-Open your browser and go to:
-http://localhost:8000
-
-📦 Project Structure
-text
-online-library/
-├── 📁 library_app/          # Main Django app
-├── 📁 books/templates/            # HTML templates
-├── 📁 static/              # CSS, JS, and images
-├── manage.py
+1. **Clone the repo**
+   ```bash
+   git clone https://github.com/ahmedmostafa99a/online-library.git
+   cd online-library
