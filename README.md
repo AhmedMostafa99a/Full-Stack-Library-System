@@ -40,8 +40,12 @@ Create a virtual environment & install dependencies
 ---
 📦 Project Structure
 online-library/
+
 ├── 📁 library_app/          # Main Django app
+
 ├── 📁 bookstemplates/            # HTML templates
+
 ├── 📁 static/CSS              # CSS, JS, and images
+
 ├── manage.py
-└── requirements.txt
+
