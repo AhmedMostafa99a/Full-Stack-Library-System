@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <form action="set_new/" method="post">
+    {% csrf_token %}
+    first name <input name="first" value="{{ value.firstname }}" required>
+    <br>
+    last name <input name="last" value="{{ value.lastname }}" required>
+    <br>
+    <input type="submit" value="update">
+</form>
+</body>
+</html>

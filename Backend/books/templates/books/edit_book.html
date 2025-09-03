@@ -1,0 +1,176 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Edit</title>
+    <link rel="stylesheet" href="{% static 'a1/book_details.css' %}">
+     <link rel="stylesheet" href="{% static 'a1/nav.css' %}">
+        <link rel="stylesheet" href="{% static 'a1/footer.css' %}" />
+    <style>
+        /* Additional styles for details page */
+        .book-detail-container {
+            max-width: 1000px;
+            margin: 20px auto;
+            padding: 20px;
+            display: flex;
+            gap: 30px;
+        }
+        
+        .detail-cover {
+            flex: 1;
+        }
+        
+        .detail-cover img {
+            width: 100%;
+            max-width: 300px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        
+        .detail-info {
+            flex: 2;
+        }
+        
+        .detail-info h1 {
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+        
+        .detail-info .author {
+            font-size: 1.2em;
+            color: #7f8c8d;
+            margin-bottom: 20px;
+        }
+        
+        .book-meta {
+            margin: 20px 0;
+        }
+        
+        .book-meta p {
+            margin: 8px 0;
+        }
+        
+        .synopsis {
+            margin: 30px 0;
+            line-height: 1.6;
+        }
+        
+        .back-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav">
+            <div class="logo">Library System</div>
+            <ul class="links">
+                <li><a href="{% url 'profile' %}">Profile</a></li>
+					<li><a href="{% url 'books' %}">Browse Books</a></li>
+					<li><a href="{% url 'borrowed' %}">My Books</a></li>
+					<li><a href="{% url 'search' %}">Search</a></li>
+					<li><a href="{% url 'bay' %}">Manage Books</a></li>
+					<div>
+					  <button class ="btn"><a href="{% url 'login' %}">log out</a></button>
+                    </div>
+            </ul>
+        </div>
+    </nav>
+
+    <form method="post" action="set_new/">
+    {% csrf_token %}
+        <div class="book-detail-container">
+        <div class="detail-cover">
+            <img id="detail-cover-img" src="{{ value.pic }}" alt="Book Cover" >
+            <input type="file" id="cover-upload" accept="image/*">
+            <input id="pic" name="pic" value="{{ value.pic }}" required style="display: none">
+        </div>
+        <div class="detail-info">
+            <h1 id="detail-title">
+                <input type="text" placeholder="Book's Name" id="title" name="title" value="{{ value.title }}" required>
+            </h1>
+            <p class="author" id="detail-author">
+                <input type="text" placeholder="Author's Name" id="author" name="author" value="{{ value.author }}" required>
+            </p>
+
+            <div class="book-meta">
+                <p><strong>Genre:</strong> <span id="detail-genre"></span>
+                    <select id="genreChoice" name="category" required>
+                        <option value="Romance" {% if value.category == "Romance" %}selected{% endif %}>Romance</option>
+                        <option value="Fantasy" {% if value.category == "Fantasy" %}selected{% endif %}>Fantasy</option>
+                        <option value="Science Fiction" {% if value.category == "Science Fiction" %}selected{% endif %}>Science Fiction</option>
+                        <option value="Mystery" {% if value.category == "Mystery" %}selected{% endif %}>Mystery</option>
+                        <option value="Horror" {% if value.category == "Horror" %}selected{% endif %}>Horror</option>
+                        <option value="Historical" {% if value.category == "Historical" %}selected{% endif %}>Historical</option>
+                        <option value="Adventure" {% if value.category == "Adventure" %}selected{% endif %}>Adventure</option>
+                        <option value="Non-fiction" {% if value.category == "Non-fiction" %}selected{% endif %}>Non-fiction</option>
+                    </select>
+                </p>
+                <p>
+{#                    <strong>Availability:</strong> <span id="detail-availability"></span>#}
+{#                    <select id="choice" name="choice" required>#}
+{#                      <option value="option1">Available</option>#}
+{#                      <option value="option2">Unavailable</option>#}
+{#                    </select>#}
+                </p>
+                <p><strong>Stock:</strong> <span id="detail-stock"></span>              <input type="number" id="name" name="stock" value="{{ value.stock }}" required></p>
+{#                <p><strong>Published:</strong> <span id="detail-published"></span>      <input type="number" id="name" name="name" required></p>#}
+{#                <p><strong>Pages:</strong> <span id="detail-pages"></span>              <input type="number" id="name" name="name" required></p>#}
+            </div>
+
+            <div class="synopsis">
+                <h3>Synopsis</h3>
+                <p id="detail-synopsis"></p>
+                <input type="text" style="height: 100px; width: 600px;" id="desc" name="description" value="{{ value.description }}" required>
+            </div>
+
+{#            <a href="admin_books.html" id="save-btn" class="btn" onclick="save()">Save</a>#}
+            <input type="submit" value="save" id="save-btn" class="btn" >
+            <a href="{% url 'bay' %}" id="cancel-btn" class="btn">Cancel</a>
+        </div>
+    </div>
+    </form>
+
+    <footer>
+        <div class="footer">
+          <div class="footer-links">
+              <a href="#">&#8505; About Us</a> |
+              <a href="#">&#9993; Contact</a> |
+              <a href="#">&#9871; Privacy Policy</a> |
+              <a href="#">&#9873; Terms of Service</a>
+          </div>
+          <div class="copyright">
+            <p>&copy; 2025 Local Library. All rights reserved .</p>
+          </div>
+        </div>
+    </footer>
+    <script>
+        document.getElementById('cover-upload').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            const base64Image = event.target.result;
+
+            // Update cover preview
+            document.getElementById('detail-cover-img').src = base64Image;
+
+            // Set hidden input value for form submission
+            document.getElementById('pic').value = base64Image;
+
+            // Optional: Debug output
+            console.log("Base64 updated:", base64Image.substring(0, 100));
+        };
+        reader.readAsDataURL(file);
+    }
+});
+    </script>
+
+</body>
