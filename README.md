@@ -36,5 +36,25 @@ A full-featured online library website built with **Django** and **Python**. Use
 
 1. **Clone the repo**
    ```bash
-   git clone https://github.com/ahmedmostafa99a/online-library.git
-   cd online-library
+  [clone repo ](https://github.com/AhmedMostafa99a/Full-Stack-Library-System.git)
+Create a virtual environment & install dependencies
+
+bash
+python -m venv venv
+source venv/bin/activate  # On Windows: `venv\Scripts\activate`
+pip install -r requirements.txt
+Run migrations & start the server
+
+bash
+python manage.py migrate
+python manage.py runserver
+Open your browser and go to:
+http://localhost:8000
+---
+📦 Project Structure
+text
+online-library/
+├── 📁 library_app/          # Main Django app
+├── 📁 books/templates/            # HTML templates
+├── 📁 static/CSS             # CSS, JS, and images
+├── manage.py
