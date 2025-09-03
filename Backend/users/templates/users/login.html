@@ -1,0 +1,90 @@
+{% load static %}
+<!Doctype html>
+<html>
+<head>
+		<link rel = "stylesheet" href="{% static 'a1/Authentication.css' %}">
+        <link rel="stylesheet" href="{% static 'a1/nav.css' %}">
+        <link rel="stylesheet" href="{% static 'a1/footer.css' %}" />
+<title >
+  Log in
+</title>
+<style>
+
+  input[placeholder]{
+    margin-left:25%; 
+    display: flex;
+    flex-direction:row ;
+  }
+  div.form{
+    margin-top: 9%;
+    margin-bottom: 9.125%;
+  }
+</style>
+</head>
+
+<body>
+  <nav>
+    <div class="nav">
+      <div class="logo">Library System</div>
+      
+    </div>
+  </nav>
+  <div class="form" >
+    <h1 > Log in  </h1>
+  <hr>
+
+    <form method ="post" action  >
+      {% csrf_token %}
+      <br>
+    {% if error %}
+
+  <div id="message" style="color: #721c24; border:1px solid #f5c6cb ; background-color: #f5c6cb ; font-weight: bold; padding:10px; margin:10px; border-radius:5px;">
+
+    {{ error }}
+  </div>
+   <script>
+    
+    setTimeout(function() {
+      window.location.href = "{% url 'signup' %}"; 
+    }, 3000);
+  </script>
+{% endif %}
+      <input  id="email" type="email" name="email" placeholder="Email address" required>
+    <br>
+      <input id="pass" type="password" name="pass" placeholder="Password" required>
+    <br>
+    
+      <input type="submit" value="Log in" >  
+
+    </form>
+<br><br>
+
+<a href="{% url 'signup' %}">create an account?</a>
+  
+    </div>
+
+    <footer>
+      <div class="footer">
+        <div class="footer-links">
+            <a href="#">&#8505; About Us</a> |
+            <a href="#">&#9993; Contact</a> |
+            <a href="#">&#9871; Privacy Policy</a> |
+            <a href="#">&#9873; Terms of Service</a>
+        </div>
+        <div class="copyright">
+
+          <p>&copy; 2025 Local Library. All rights reserved .</p>
+
+        </div>
+      </div>
+    </footer>
+    
+    
+    
+      
+      
+      
+    
+  </body>
+
+</html>

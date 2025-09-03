@@ -1,0 +1,148 @@
+<!Doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="Authentication.css">
+<link rel="stylesheet" href="footer.css" />
+<title >Sign-Up</title>
+<style>
+  div.form{
+margin-top: 8%;
+margin-bottom:7.25% ;
+
+  }
+</style>
+</head>
+
+<body>
+ 
+  <nav>
+    <div class="nav">
+      <div class="logo">Library System</div>
+      
+    </div>
+  </nav>
+
+  <div class="form">
+<h2 > Create a new account</h2>
+<hr>
+<br><br>
+    <form action="login.html" method ="post">
+      
+      <div id="message" style="display:none; padding:10px; margin:10px; border-radius:5px;"></div>
+  <div class="row">
+    <input  id="name" type="text"  name="name" placeholder= "Name"required >
+    <input  id="email" type="email" name="email" placeholder= "example@gmail.com"required>
+  </div>
+  <div class="row">
+    <input  id="pass" type="password" name="pass" placeholder= "Password"required>
+    <input  id="Cpass" type="password" name="Cpass" placeholder= "confirm Password"required>
+  </div>
+  
+      
+      <br>
+      <label for ="user">user</label>
+      <input  id ="user" type="radio" name="is_admin" value="User" required >
+    
+      <label for="admin">admin</label>
+      <input id ="admin" type ="radio" name="is_admin" value="admin" required>
+     
+      <br><br>
+      <input type="submit" value="Sign-Up" >  
+    
+      <br><br>
+      <a href="login.html">already have an account?</a>
+
+    <form>
+</div>
+
+<footer>
+  <div class="footer">
+    <div class="footer-links">
+        <a href="#">&#8505; About Us</a> |
+        <a href="#">&#9993; Contact</a> |
+        <a href="#">&#9871; Privacy Policy</a> |
+        <a href="#">&#9873; Terms of Service</a>
+    </div>
+    <div class="copyright">
+      <p>&copy; 2025 Local Library. All rights reserved .</p>
+    </div>
+  </div>
+</footer>
+    <!---------------------------->
+    <script>
+      // document.forms[0].onsubmit = () => {
+      //   localStorage.userEmail = document.getElementById("email").value;
+      // };
+
+// Show Message function
+function showMessage(text, type = "success") {
+    const messageDiv = document.getElementById('message');
+    messageDiv.textContent = text;
+    messageDiv.style.display = 'block';
+
+    if (type === "success") {
+        messageDiv.style.backgroundColor = "#d4edda";
+        messageDiv.style.color = "#155724";
+        messageDiv.style.border = "1px solid #c3e6cb";
+    } else if (type === "error") {
+        messageDiv.style.backgroundColor = "#f8d7da";
+        messageDiv.style.color = "#721c24";
+        messageDiv.style.border = "1px solid #f5c6cb";
+    }
+
+    setTimeout(() => {
+        messageDiv.style.display = 'none';
+    }, 3000);
+}
+
+// Sign-Up logic
+const form = document.querySelector('form');
+
+form.addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const name = document.getElementById('name').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const pass = document.getElementById('pass').value.trim();
+    const confirmPass = document.getElementById('Cpass').value.trim();
+    const isAdmin = document.querySelector('input[name="is_admin"]:checked').value;
+
+    let persons = JSON.parse(localStorage.getItem('persons')) || [];
+
+    const exists = persons.find(person => person.email === email);
+  if (confirmPass!=pass){ 
+    showMessage("Confirm password should be the same as password","error")
+    return
+
+  }else if (exists) {
+        showMessage('Email already registered!', 'error');
+        return;
+    }
+
+    const newUser = {
+        name,
+        email,
+        pass,
+        isAdmin
+    };
+
+    persons.push(newUser);
+    localStorage.setItem('persons', JSON.stringify(persons));
+
+    showMessage('Account created successfully!', 'success');
+    setTimeout(() => {
+        window.location.href = "login.html"; // Redirect after 2 seconds
+    }, 1000);
+});
+let persons = JSON.parse(localStorage.getItem('userEmail')) ;
+if(persons.isAdmin=="User"){
+  const link = document.querySelector('a[href="admin_books.html"]');
+
+  if(link){
+    link.remove();
+  }
+}
+</script>
+
+</body>
+</html>

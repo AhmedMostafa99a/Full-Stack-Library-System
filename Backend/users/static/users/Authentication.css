@@ -1,0 +1,94 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  body{
+    
+    background-color: #f0f2f5;
+    text-align: center;
+ 
+  }
+  .nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background-color: #3498db;
+    color: white;
+  }
+  h2{
+    padding-bottom: 4%;
+  }
+  h1{
+    padding-bottom: 4%;
+  }
+ 
+
+input[type="submit"]{
+background-color:#1877f2;
+color:aliceblue;
+border:none;
+border-radius: 25rcap;
+cursor: pointer;
+  }
+  input[type="submit"]:hover{
+    color:rgba(255, 255, 255, 0.832) ;
+    background-color: rgb(17, 109, 229);
+  }
+
+input[placeholder],select{
+    display: flex;
+    flex-direction: column;
+    gap: 5%;
+    width: 50%; 
+  }
+
+.row {
+      display: flex;
+      gap: 1%;
+      
+      flex:1;
+    }
+div.form
+   {
+    background-color: white;
+    text-align: center;
+    padding-left:2.5%;
+    padding-right:2.5%;
+    padding-top: 2.5%;
+    padding-bottom: 2.5%;
+    border: solid #1877f2;
+    border-radius: 3%;
+    border-width: 50;
+    margin-left:34.3% ;
+    margin-top:4% ;
+    margin-right:33.3% ;
+    height:99%;
+    width: 30%;
+    box-shadow: 0 0 10px rgba(81, 4, 4, 0.71);
+}
+
+input,select
+{
+    height: 50%;
+    width: 50%;
+    margin:1% 1% 1% 1%;
+    padding:1% 1% 1% 1% ;
+}
+
+input[type="radio"]{
+    height: 10%;
+    width: 10%;
+
+}
+footer{
+    background-color: #3498db;
+    color: white;
+    
+    text-align: center;
+    padding: 1rem 0;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
